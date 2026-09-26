@@ -2,6 +2,8 @@ import { motion } from 'framer-motion'
 import { contact, hero } from '../content'
 import { Button } from '../components/Button'
 import { RotatingSeal } from '../components/RotatingSeal'
+import { isVideoUrl } from '../lib/media'
+import { Media } from '../components/Media'
 import { BreakoutFrame } from '../components/BreakoutFrame'
 import { Cutout } from '../motion/Cutout'
 import { BlockWipe, SplitWords, TrackingLabel } from '../motion/text'
@@ -135,19 +137,30 @@ export function Hero() {
             {/* On a phone the cutout runs the full width of the screen under the
                 headline block; the inset percentage only makes sense beside a
                 second column. */}
-            <BreakoutFrame stage="aspect-[4/5] w-full sm:w-[78%] sm:max-w-[34rem] lg:ml-auto lg:w-full">
-              <Cutout
+            {isVideoUrl(hero.image) ? (
+              /* The breakout frame is built on an alpha cutout, so a video gets a
+                 plain full-bleed frame instead of a rectangle floating in a blob. */
+              <Media
                 src={hero.image}
-                alt="A draped evening gown from the Adora Fashions atelier"
+                alt="From the Adora Fashions atelier"
                 priority
-                speed={78}
-                rotate={2.8}
-                swell={0.055}
-                entrance="blur"
-                delay={0.95}
-                className="h-full w-full"
+                className="aspect-[4/5] w-full object-cover sm:w-[78%] sm:max-w-[34rem] lg:ml-auto lg:w-full"
               />
-            </BreakoutFrame>
+            ) : (
+              <BreakoutFrame stage="aspect-[4/5] w-full sm:w-[78%] sm:max-w-[34rem] lg:ml-auto lg:w-full">
+                <Cutout
+                  src={hero.image}
+                  alt="A draped evening gown from the Adora Fashions atelier"
+                  priority
+                  speed={78}
+                  rotate={2.8}
+                  swell={0.055}
+                  entrance="blur"
+                  delay={0.95}
+                  className="h-full w-full"
+                />
+              </BreakoutFrame>
+            )}
 
             <motion.p
               className="absolute -bottom-2 left-0 hidden max-w-[9rem] text-xs leading-[1.7] text-warm-gray lg:block"

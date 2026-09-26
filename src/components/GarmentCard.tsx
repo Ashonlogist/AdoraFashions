@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion'
+import { isVideoUrl } from '../lib/media'
+import { Media } from './Media'
 import { Cutout } from '../motion/Cutout'
 import { EASE } from '../lib/motion'
 import { useMotionPreference } from '../lib/useMotionPreference'
@@ -76,16 +78,27 @@ export function GarmentCard({
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 1.15, delay: delay + 0.12, ease: EASE.couture }}
             >
-              <Cutout
-                src={item.image}
-                alt={item.title}
-                entrance="none"
-                float={false}
-                parallax={false}
-                priority={priority}
-                fit="cover"
-                className="transition-transform duration-[1200ms] ease-couture group-hover:scale-[1.045]"
-              />
+              {isVideoUrl(item.image) ? (
+                /* A pasted video plays in the card. The Cutout treatment is for
+                   stills, so a video gets the same frame without it. */
+                <Media
+                  src={item.image}
+                  alt={item.title}
+                  priority={priority}
+                  className="h-full w-full object-cover transition-transform duration-[1200ms] ease-couture group-hover:scale-[1.045]"
+                />
+              ) : (
+                <Cutout
+                  src={item.image}
+                  alt={item.title}
+                  entrance="none"
+                  float={false}
+                  parallax={false}
+                  priority={priority}
+                  fit="cover"
+                  className="transition-transform duration-[1200ms] ease-couture group-hover:scale-[1.045]"
+                />
+              )}
             </motion.div>
           </motion.div>
 

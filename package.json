@@ -15,7 +15,8 @@
     "check": "npm run typecheck && npm run test:api && npm run test:netlify && npm run check:site && npm run check:admin && npm run check:breakout",
     "test:netlify": "tsx scripts/test-netlify.mts",
     "check:breakout": "node scripts/check-breakout.mjs",
-    "dev:api": "tsx scripts/dev-api.mts"
+    "dev:api": "tsx scripts/dev-api.mts",
+    "check:video": "node scripts/check-video.mjs"
   },
   "dependencies": {
     "@octokit/rest": "^22.0.0",

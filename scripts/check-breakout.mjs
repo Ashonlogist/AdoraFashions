@@ -116,10 +116,45 @@ for (const route of ['/', '/about']) {
     await new Promise((resolve) => setTimeout(resolve, 1200))
 
     const m = await page.evaluate(MEASURE)
+    /* Measured before the page is closed — a video hero has no alpha channel, so
+       there is no cutout for MEASURE to find and its geometry is checked here. */
+    const heroVideo = m.missing
+      ? await page.evaluate(() => {
+          const video = document.querySelector('video')
+          if (!video) return { found: false }
+          const r = video.getBoundingClientRect()
+          return {
+            found: true,
+            left: r.left,
+            right: r.right,
+            width: r.width,
+            decoded: video.videoWidth > 0,
+            scrollWidth: document.documentElement.scrollWidth,
+            clientWidth: document.documentElement.clientWidth,
+          }
+        })
+      : null
     await page.close()
 
     if (m.missing) {
-      fail(`${width}px: no breakout frame found on ${route}`)
+      /* A hero video has no alpha channel, so it is deliberately not wrapped in
+         the breakout shape and there is no cutout to measure. The composition is
+         a different design, but the guard still applies: assert the video is
+         there, in bounds, and not pushing the page sideways. */
+      const v = heroVideo
+      if (!v.found) {
+        fail(`${width}px: no breakout frame and no hero video on ${route}`)
+      } else {
+        if (!v.decoded) fail(`${width}px: hero video never decoded`)
+        if (v.left < -1) fail(`${width}px: hero video starts ${Math.abs(v.left).toFixed(0)}px off screen`)
+        if (v.width < 40) fail(`${width}px: hero video collapsed to ${v.width.toFixed(0)}px wide`)
+        if (v.scrollWidth > v.clientWidth) {
+          fail(`${width}px: page scrolls sideways (${v.scrollWidth} > ${v.clientWidth})`)
+        }
+        console.log(
+          `  ok  ${width}px  hero video ${v.width.toFixed(0)}px wide, decoded, in bounds | scroll ${v.clientWidth}/${v.scrollWidth}`,
+        )
+      }
       continue
     }
     if (!m.loaded) fail(`${width}px: the artwork never loaded`)

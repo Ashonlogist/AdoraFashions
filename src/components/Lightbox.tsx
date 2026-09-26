@@ -4,6 +4,8 @@ import { createPortal } from 'react-dom'
 import type { CollectionItem } from '../content'
 import { Button } from './Button'
 import { DURATION, EASE } from '../lib/motion'
+import { isVideoUrl } from '../lib/media'
+import { Media } from './Media'
 import { useMotionPreference } from '../lib/useMotionPreference'
 
 /**
@@ -93,11 +95,12 @@ export function Lightbox({
             transition={{ duration: 0.85, ease: EASE.couture }}
           >
             <div className="cutout h-[86%] w-[86%]">
-              <img
+              <Media
                 src={item.image}
                 alt={item.title}
+                /* Opened deliberately, so this one keeps its controls. */
+                controls={isVideoUrl(item.image)}
                 className="h-full w-full select-none object-contain"
-                draggable={false}
               />
             </div>
           </motion.div>

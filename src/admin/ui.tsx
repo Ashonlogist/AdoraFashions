@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AlertIcon, CheckIcon, LinkIcon, TrashIcon, UploadIcon } from '../components/icons'
+import { isEmbedUrl } from '../lib/media'
+import { Media } from '../components/Media'
 import { adminApi, formatBytes } from './api'
 import type { SaveState } from './api'
 
@@ -121,7 +123,7 @@ export function Segmented<T extends string>({
 const UPLOAD_HINT =
   'For best results, upload a transparent PNG with the background removed (use Canva’s Background Remover or remove.bg, then export as PNG). This keeps every photo looking clean and consistent across the site.'
 const LINK_HINT =
-  'Paste a direct image URL (ending in .jpg, .png, etc.) — works well for already-hosted photos.'
+  'Paste a direct media URL. An image (.jpg, .png, .webp) is used as-is. A video file (.mp4, .webm, .mov) plays on its own, muted and looping, and is held still for anyone who prefers reduced motion. Social share links — an Instagram reel, YouTube, TikTok — cannot be played this way; download the file and paste its direct link instead.'
 
 /** Pulls the slot out of any image path, whatever the extension. */
 export function slotFromPath(value: string, fallback = ''): string {
@@ -181,8 +183,19 @@ export function ImageField({
 
       <div className="mt-5 flex flex-wrap gap-5">
         <div className="grid h-28 w-24 shrink-0 place-items-center overflow-hidden border border-hairline bg-bone">
-          {value ? (
-            <img src={value} alt="" className="h-full w-full object-contain" />
+          {value && isEmbedUrl(value) ? (
+            <span className="px-2 text-center text-[0.5625rem] uppercase leading-[1.6] tracking-[0.14em] text-warm-gray">
+              Web page
+              <br />
+              not a file
+            </span>
+          ) : value ? (
+            <Media
+              src={value}
+              alt=""
+              controls={false}
+              className="h-full w-full object-contain"
+            />
           ) : (
             <span className="px-2 text-center text-[0.5625rem] uppercase tracking-[0.14em] text-warm-gray">
               No image
@@ -231,6 +244,17 @@ export function ImageField({
           )}
         </div>
       </div>
+
+      {isEmbedUrl(value) ? (
+        <p role="alert" className="mt-4 border-l-2 border-accent bg-accent/5 py-3 pl-4 text-xs leading-[1.75] text-charcoal">
+          That link points at a web page, not an image or video file, so nothing can display
+          from it. Open the post, download the photo or video, then either upload the file
+          here or paste a direct link to the file itself — one ending in{' '}
+          <code className="bg-bone px-1 py-0.5">.jpg</code>,{' '}
+          <code className="bg-bone px-1 py-0.5">.png</code> or{' '}
+          <code className="bg-bone px-1 py-0.5">.mp4</code>.
+        </p>
+      ) : null}
 
       <p className="mt-5 border-t border-hairline pt-4 text-xs leading-[1.75] text-warm-gray">
         {mode === 'upload' ? UPLOAD_HINT : LINK_HINT}
