@@ -67,7 +67,7 @@ export default function About() {
                     Founder & Lead Designer
                   </p>
                 </div>
-                <span aria-hidden className="hidden h-10 w-px bg-hairline sm:block" />
+                <span aria-hidden className="block h-10 w-px bg-hairline" />
                 <Button to="/contact" variant="outline">
                   Book a fitting
                 </Button>
@@ -75,6 +75,9 @@ export default function About() {
             </div>
 
             <div className="relative">
+              {/* Kept inset on a phone: running this portrait full-bleed pushes the
+                  subject 70px clear of the shape, which is a lot of headroom on a
+                  375px screen. The hero is the image that earns the full width. */}
               <BreakoutFrame stage="aspect-[4/5] w-[80%] sm:w-[70%] lg:ml-auto lg:w-full">
                 <Cutout
                   src={about.portraitImage}

@@ -575,6 +575,12 @@ export function SettingsEditor({ value, onChange }: EditorProps<SettingsContent>
           rows={5}
         />
       </Field>
+      <Field label="Footer blurb" hint="The paragraph under the wordmark.">
+        <TextArea value={value.footerBlurb} onChange={(next) => set('footerBlurb', next)} rows={3} />
+      </Field>
+      <Field label="Footer location" hint="The short line at the very bottom, right-hand side.">
+        <TextInput value={value.footerLocation} onChange={(next) => set('footerLocation', next)} />
+      </Field>
       <Field label="Footer copyright">
         <TextArea value={value.footerCopyright} onChange={(next) => set('footerCopyright', next)} rows={2} />
       </Field>

@@ -10,7 +10,11 @@ type Size = 'sm' | 'md' | 'lg'
 const SIZES: Record<Size, string> = {
   sm: 'px-5 py-2.5 text-[0.6875rem]',
   md: 'px-7 py-3.5 text-xs',
-  lg: 'px-9 py-4.5 text-xs',
+  /* `py-4.5` is not a step on Tailwind's spacing scale, so it was silently
+     dropped and every large button rendered 18px tall with no vertical padding
+     at all. py-5 keeps the intended proportion — 36 / 44 / 56 — and every size
+     now clears the 44px touch target. */
+  lg: 'px-9 py-5 text-xs',
 }
 
 const VARIANTS: Record<Variant, string> = {

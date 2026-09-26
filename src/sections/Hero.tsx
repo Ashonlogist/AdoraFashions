@@ -92,18 +92,18 @@ export function Hero() {
                 {hero.subheadline}
               </p>
 
-              <div className="mt-10 flex flex-wrap items-center gap-5">
+              <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
                 <Button to={hero.ctaLink} size="lg">
                   {hero.ctaText}
                 </Button>
-                <Button to="/contact" variant="quiet" arrow>
+                <Button to="/contact" variant="quiet" arrow className="self-start">
                   Book a consultation
                 </Button>
               </div>
             </motion.div>
 
             <motion.dl
-              className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-hairline pt-6"
+              className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-hairline pt-6"
               initial={reduced ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.1, delay: 1.5, ease: EASE.couture }}
@@ -112,7 +112,7 @@ export function Hero() {
                 <dt className="label">Atelier</dt>
                 <dd className="mt-1.5 font-display text-lg">Accra, Ghana</dd>
               </div>
-              <span aria-hidden className="hidden h-8 w-px bg-hairline sm:block" />
+              <span aria-hidden className="block h-8 w-px bg-hairline" />
               <div>
                 <dt className="label">Taking commissions</dt>
                 <dd className="mt-1.5 font-display text-lg">Spring / Summer</dd>
@@ -132,7 +132,10 @@ export function Hero() {
               transition={{ duration: 1.4, delay: 1.2, ease: EASE.couture }}
             />
 
-            <BreakoutFrame>
+            {/* On a phone the cutout runs the full width of the screen under the
+                headline block; the inset percentage only makes sense beside a
+                second column. */}
+            <BreakoutFrame stage="aspect-[4/5] w-full sm:w-[78%] sm:max-w-[34rem] lg:ml-auto lg:w-full">
               <Cutout
                 src={hero.image}
                 alt="A draped evening gown from the Adora Fashions atelier"

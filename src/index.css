@@ -194,3 +194,112 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Mobile layer — intentionally unlayered.
+
+   Tailwind's `grid`, `flex` and `hidden` utilities live in the utilities layer,
+   which beats @layer components. A mobile override kept in components would
+   therefore lose to the very classes it is meant to replace, and `.m-rail`
+   would never become a flex row. Unlayered rules win, and the media query keeps
+   the whole thing off the desktop.
+   --------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   Mobile layer.
+
+   The desktop composition is a wide editorial grid; a phone should not be a
+   narrowed version of it. Everything below only applies under `md`, so the
+   desktop layout is untouched and these act as the phone's own design system:
+   full-bleed imagery, a snap rail instead of a grid, and touch targets that
+   are actually reachable with a thumb.
+   --------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  /* Escape the shell's side padding and run to both screen edges. */
+  .m-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  /* Bleed off the right edge only, so a rail or caption keeps the shell's left
+     gutter and still runs off the side of the screen. For direct children of
+     .shell, whose mobile padding is 1.5rem. */
+  .m-bleed-r {
+    width: calc(100% + 1.5rem);
+    margin-right: -1.5rem;
+  }
+
+  /* Horizontal snap rail. The desktop grid becomes a swipe on a phone, which
+     is the one gesture a narrow screen is actually good at. */
+  .m-rail {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.875rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    scrollbar-width: none;
+  }
+
+  .m-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .m-rail > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    width: 76vw;
+    max-width: 21rem;
+  }
+
+  /* A hint that there is more to the side. */
+  .m-rail-peek::after {
+    content: '';
+    flex: 0 0 auto;
+    width: 0.25rem;
+  }
+
+  /* A scrollable row whose children keep their natural width — filter chips,
+     where a rail would stretch each one to a share of the screen. */
+  .m-scroll-x {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .m-scroll-x::-webkit-scrollbar {
+    display: none;
+  }
+
+  .m-scroll-x > * {
+    flex: 0 0 auto;
+  }
+
+  /* 44px is the smallest target a thumb can hit reliably. */
+  .m-tap {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+
+  /* Display type gets bigger and tighter on a phone, not smaller and looser. */
+  .m-display {
+    font-size: clamp(2.75rem, 13vw, 3.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  .m-display-sm {
+    font-size: clamp(2rem, 9.5vw, 2.75rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+  }
+
+  /* Primary actions go full width: a centred pill on a 375px screen wastes
+     half the reachable area. */
+  .m-full {
+    width: 100%;
+  }
+}

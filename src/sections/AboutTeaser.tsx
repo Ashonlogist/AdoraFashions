@@ -81,18 +81,26 @@ export function AboutTeaser() {
             </motion.p>
 
             <motion.dl
-              className="mt-12 grid grid-cols-3 gap-6 border-y border-hairline py-7"
+              className="mt-12 grid grid-cols-3 gap-x-4 border-y border-hairline py-7 md:gap-6"
               initial={reduced ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 1, delay: 0.15, ease: EASE.couture }}
             >
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <dt className="font-display text-[2rem] leading-none tracking-[-0.02em] md:text-[2.5rem]">
+              {stats.map((stat, index) => (
+                <div
+                  key={stat.label}
+                  /* Vertical hairlines between the figures, so three narrow
+                     columns read as one designed unit instead of a squeezed
+                     three-up grid. */
+                  className={
+                    index > 0 ? 'border-l border-hairline pl-4 md:pl-6' : undefined
+                  }
+                >
+                  <dt className="font-display text-[1.75rem] leading-none tracking-[-0.02em] md:text-[2.5rem]">
                     {stat.value}
                   </dt>
-                  <dd className="mt-3 text-[0.6875rem] uppercase leading-[1.6] tracking-[0.14em] text-warm-gray">
+                  <dd className="mt-3 text-[0.625rem] uppercase leading-[1.6] tracking-[0.12em] text-warm-gray md:text-[0.6875rem] md:tracking-[0.14em]">
                     {stat.label}
                   </dd>
                 </div>

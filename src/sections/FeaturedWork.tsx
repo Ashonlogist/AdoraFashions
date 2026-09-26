@@ -20,7 +20,7 @@ export function FeaturedWork({ onOpen }: { onOpen: (id: string) => void }) {
         <TextLink to="/collections">All collections</TextLink>
       </div>
 
-      <div className="mt-16 grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 md:mt-20 lg:grid-cols-3 lg:gap-x-10">
+      <div className="m-rail m-rail-peek m-bleed-r mt-16 grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 md:mt-20 lg:grid-cols-3 lg:gap-x-10">
         {items.map((item, index) => (
           <div
             key={item.id}

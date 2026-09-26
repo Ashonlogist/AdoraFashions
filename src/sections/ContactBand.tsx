@@ -48,7 +48,7 @@ export function ContactBand() {
           </motion.p>
 
           <motion.div
-            className="mt-11 flex flex-wrap items-center gap-5"
+            className="mt-11 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5"
             initial={reduced ? false : { opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}

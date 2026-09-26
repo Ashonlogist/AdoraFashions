@@ -66,9 +66,9 @@ export function Testimonials() {
                   : { opacity: 0, x: direction * -44, clipPath: 'inset(0% 100% 0% 0%)' }
               }
               transition={{ duration: reduced ? 0.3 : DURATION.slow, ease: EASE.couture }}
-              className="text-center"
+              className="text-left md:text-center"
             >
-              <span aria-hidden className="mx-auto mb-9 block text-accent">
+              <span aria-hidden className="mb-9 block text-accent md:mx-auto">
                 <svg width="26" height="20" viewBox="0 0 26 20" fill="none">
                   <path
                     d="M10.5 0C5 2.6 1.4 7 1.4 12.2 1.4 16.6 3.8 19.4 7.4 19.4c2.9 0 5-2 5-4.7 0-2.6-1.8-4.5-4.3-4.5-.5 0-1 .1-1.2.2C7.4 7.6 9 5.4 11.6 3.7L10.5 0Zm14.1 0c-5.5 2.6-9.1 7-9.1 12.2 0 4.4 2.4 7.2 6 7.2 2.9 0 5-2 5-4.7 0-2.6-1.8-4.5-4.3-4.5-.5 0-1 .1-1.2.2 1.5-2.8 3.1-5 5.7-6.7L24.6 0Z"
@@ -105,7 +105,7 @@ export function Testimonials() {
                   setState([entryIndex, entryIndex > index ? 1 : -1])
                   setPaused(true)
                 }}
-                className="group relative h-8 w-8"
+                className="group relative h-11 w-11"
               >
                 <span
                   className={`absolute left-1/2 top-1/2 block -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-700 ease-couture ${
@@ -120,14 +120,14 @@ export function Testimonials() {
 
           {total > 1 ? (
             <div className="flex items-center gap-2">
-              <Button variant="quiet" size="sm" arrow={false} onClick={() => go(-1)} cursor="link">
+              <Button variant="quiet" size="sm" arrow={false} onClick={() => go(-1)} cursor="link" className="m-tap">
                 <span className="inline-block rotate-180">
                   <svg width="22" height="8" viewBox="0 0 22 8" fill="none" aria-hidden>
                     <path d="M0 4h20M16.5 0.75 20 4l-3.5 3.25" stroke="currentColor" strokeWidth="1" />
                   </svg>
                 </span>
               </Button>
-              <Button variant="quiet" size="sm" arrow={false} onClick={() => go(1)} cursor="link">
+              <Button variant="quiet" size="sm" arrow={false} onClick={() => go(1)} cursor="link" className="m-tap">
                 <svg width="22" height="8" viewBox="0 0 22 8" fill="none" aria-hidden>
                   <path d="M0 4h20M16.5 0.75 20 4l-3.5 3.25" stroke="currentColor" strokeWidth="1" />
                 </svg>

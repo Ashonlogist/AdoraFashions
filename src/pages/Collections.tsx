@@ -29,7 +29,7 @@ export default function Collections() {
           lede="Not a shop — a rail. Each piece below was drafted for one client, then photographed before it left the atelier. Browse by category, or open any piece to read how it was built."
         />
 
-        <div className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-4 border-y border-hairline py-5">
+        <div className="m-scroll-x m-bleed-r mt-14 flex items-center gap-x-8 gap-y-4 border-y border-hairline py-5">
           {categories.map((category) => {
             const active = category === filter
             const count =
@@ -43,7 +43,7 @@ export default function Collections() {
                 data-cursor="link"
                 onClick={() => setFilter(category)}
                 aria-pressed={active}
-                className="group relative flex items-baseline gap-2 font-sans text-[0.6875rem] font-medium uppercase tracking-[0.15em] transition-colors duration-500"
+                className="group relative flex min-h-[2.75rem] items-baseline gap-2 font-sans text-[0.6875rem] font-medium uppercase tracking-[0.15em] transition-colors duration-500"
               >
                 <span className={active ? 'text-charcoal' : 'text-warm-gray group-hover:text-charcoal'}>
                   {category}
@@ -71,7 +71,7 @@ export default function Collections() {
         {visible.length > 0 ? (
           <motion.div
             key={filter}
-            className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-10"
+            className="m-rail m-rail-peek m-bleed-r grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, ease: EASE.couture }}

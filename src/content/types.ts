@@ -66,6 +66,8 @@ export type ContactContent = {
 export type SettingsContent = {
   accentColor: 'terracotta' | 'gold' | 'charcoal'
   footerCopyright: string
+  footerBlurb: string
+  footerLocation: string
   statementLine: string
   statementEmphasis: string
   bandHeadline: string
