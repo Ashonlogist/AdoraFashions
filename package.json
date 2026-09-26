@@ -4,16 +4,18 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "lint": "oxlint",
-    "art": "node scripts/generate-art.mjs",
     "test:api": "tsx scripts/test-api.mts",
     "check:site": "node scripts/check-site.mjs",
     "check:admin": "node scripts/check-admin.mjs",
-    "check": "npm run typecheck && npm run test:api && npm run check:site && npm run check:admin"
+    "check": "npm run typecheck && npm run test:api && npm run test:netlify && npm run check:site && npm run check:admin && npm run check:breakout",
+    "test:netlify": "tsx scripts/test-netlify.mts",
+    "check:breakout": "node scripts/check-breakout.mjs",
+    "dev:api": "tsx scripts/dev-api.mts"
   },
   "dependencies": {
     "@octokit/rest": "^22.0.0",

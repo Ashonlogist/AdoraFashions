@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { about } from '../content'
 import { Button } from '../components/Button'
 import { philosophyIcons } from '../components/icons'
+import { BreakoutFrame } from '../components/BreakoutFrame'
 import { Cutout } from '../motion/Cutout'
 import { BlockWipe, SplitWords } from '../motion/text'
 import { EASE } from '../lib/motion'
@@ -74,7 +75,7 @@ export default function About() {
             </div>
 
             <div className="relative">
-              <div className="relative mx-auto aspect-[4/5] w-[80%] sm:w-[70%] lg:ml-auto lg:w-full">
+              <BreakoutFrame stage="aspect-[4/5] w-[80%] sm:w-[70%] lg:ml-auto lg:w-full">
                 <Cutout
                   src={about.portraitImage}
                   alt={`${about.signature}, founder and lead designer`}
@@ -83,8 +84,9 @@ export default function About() {
                   speed={70}
                   rotate={2.2}
                   swell={0.05}
+                  fit="cover"
                 />
-              </div>
+              </BreakoutFrame>
               <motion.span
                 aria-hidden
                 className="absolute -bottom-4 right-0 h-28 w-28 border-b border-r border-accent/40 md:-bottom-6 md:h-40 md:w-40"

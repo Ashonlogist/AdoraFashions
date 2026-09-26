@@ -123,6 +123,12 @@ const UPLOAD_HINT =
 const LINK_HINT =
   'Paste a direct image URL (ending in .jpg, .png, etc.) — works well for already-hosted photos.'
 
+/** Pulls the slot out of any image path, whatever the extension. */
+export function slotFromPath(value: string, fallback = ''): string {
+  const file = value.split('/').pop() ?? ''
+  return file.replace(/\.\w+$/, '') || fallback
+}
+
 export function ImageField({
   label,
   slot,
@@ -205,7 +211,7 @@ export function ImageField({
               </button>
               <p className="text-[0.6875rem] leading-[1.7] text-warm-gray">
                 Saved as{' '}
-                <code className="bg-bone px-1.5 py-0.5 text-charcoal/80">{slot}.png</code>{' '}
+                <code className="bg-bone px-1.5 py-0.5 text-charcoal/80">{slot}.webp</code>{' '}
                 — you never need to think about filenames.
               </p>
             </div>

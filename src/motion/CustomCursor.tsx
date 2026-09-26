@@ -5,6 +5,22 @@ import { useMotionPreference } from '../lib/useMotionPreference'
 
 type CursorMode = 'default' | 'link' | 'view'
 
+/**
+ * The cursor is drawn twice over, in the two colours that sit at opposite ends of
+ * the palette, so whichever one the backdrop matches, the other one carries it.
+ * A single-colour cursor cannot do this: at 35% charcoal it measured 1.00:1 on a
+ * charcoal section, and the accent dot measured 1.00:1 on an accent one.
+ *
+ * These are the worst cases of the pair across every background colour:
+ *   bone 15.4:1 · cream 16.4:1 · charcoal 15.4:1 · warm-gray 4.6:1
+ *   accent 5.5:1 · hairline 13.0:1
+ * so at least one edge is always comfortably past the 3:1 that non-text
+ * interface elements are held to.
+ */
+const RING_HAIRLINE = 'inset 0 0 0 1px rgba(28, 26, 23, 0.5), 0 0 0 1px rgba(245, 241, 234, 0.85)'
+const RING_DISC = '0 0 0 2px rgba(245, 241, 234, 0.92)'
+const DOT_HALO = '0 0 0 1.5px rgba(245, 241, 234, 0.92)'
+
 const LABELS: Record<Exclude<CursorMode, 'default'>, string> = {
   link: '',
   view: 'View',
@@ -57,9 +73,14 @@ export function CustomCursor({ enabled: allowed = true }: { enabled?: boolean } 
         visibleRef.current = true
         setVisible(true)
       }
-      const target = (event.target as HTMLElement | null)?.closest?.('[data-cursor]') as
+      const found = (event.target as HTMLElement | null)?.closest?.('[data-cursor]') as
         | HTMLElement
         | null
+      // The document element carries `data-cursor="on"` purely as the CSS hook
+      // that hides the native cursor. Letting it win the lookup meant every
+      // unmarked element resolved to mode "on", which is not a real mode — the
+      // solid dot then never rendered and only the hairline ring was left.
+      const target = found === document.documentElement ? null : found
       const next = (target?.dataset.cursor as CursorMode | undefined) ?? 'default'
       setMode(next)
     }
@@ -106,13 +127,16 @@ export function CustomCursor({ enabled: allowed = true }: { enabled?: boolean } 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-[100] hidden md:block">
       <motion.div
-        className="absolute left-0 top-0 flex h-9 w-9 items-center justify-center rounded-full border border-charcoal/35"
+        className="absolute left-0 top-0 flex h-9 w-9 items-center justify-center rounded-full"
         style={{ x: ringX, y: ringY, translateX: '-50%', translateY: '-50%' }}
         animate={{
           scale: pressed ? ringScale * 0.82 : ringScale,
-          opacity: visible ? (mode === 'view' ? 1 : 0.55) : 0,
+          // Kept high: the two-tone edges need to stay legible, and dimming both
+          // of them is what made the old cursor vanish on light sections.
+          opacity: visible ? (mode === 'view' ? 1 : 0.9) : 0,
           backgroundColor:
             mode === 'view' ? 'rgba(28, 26, 23, 0.92)' : 'rgba(245, 241, 234, 0)',
+          boxShadow: mode === 'view' ? RING_DISC : RING_HAIRLINE,
         }}
         transition={{ duration: 0.5, ease: EASE.couture }}
       />
@@ -125,8 +149,8 @@ export function CustomCursor({ enabled: allowed = true }: { enabled?: boolean } 
         {label}
       </motion.span>
       <motion.span
-        className="absolute left-0 top-0 block h-1.5 w-1.5 rounded-full bg-accent"
-        style={{ x: dotX, y: dotY, translateX: '-50%', translateY: '-50%' }}
+        className="absolute left-0 top-0 block h-1.5 w-1.5 rounded-full bg-charcoal"
+        style={{ x: dotX, y: dotY, translateX: '-50%', translateY: '-50%', boxShadow: DOT_HALO }}
         animate={{ opacity: visible && mode === 'default' ? 1 : 0, scale: pressed ? 0.6 : 1 }}
         transition={{ duration: 0.3, ease: EASE.couture }}
       />

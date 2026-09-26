@@ -2,6 +2,9 @@ import type { ApiRequest, ApiResponse } from '../_lib/http'
 import { configurationError, methodNotAllowed, requireSession } from '../_lib/auth'
 import { client, fail, repoConfig } from '../_lib/github'
 
+/** Anything the browser can render, and nothing else. */
+const IMAGE_FILE = /\.(png|jpe?g|webp|avif|gif)$/i
+
 /** Lists what is already in `/public/images` so the owner can see their library. */
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (req.method !== 'GET') return methodNotAllowed(res, ['GET'])
@@ -22,11 +25,16 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     })
     const images = (data.tree ?? [])
       .filter((entry) => entry.type === 'blob' && entry.path?.startsWith('public/images/'))
-      .map((entry) => ({
-        slot: entry.path!.replace('public/images/', '').replace(/\.png$/i, ''),
-        file: entry.path!.split('/').pop()!,
-        path: `/${entry.path!.replace('public/', '')}`,
-        size: entry.size ?? 0,
+      // Credits and stray notes live in here too; they are not replaceable art.
+      .map((entry) => entry.path!.replace('public/images/', ''))
+      .filter((file) => IMAGE_FILE.test(file))
+      .map((file) => ({
+        // The slot is the filename without its extension, so the dashboard can
+        // match an image to a field whether it is stored as .webp or .png.
+        slot: file.replace(IMAGE_FILE, ''),
+        file,
+        path: `/images/${file}`,
+        size: 0,
       }))
       .sort((a, b) => a.slot.localeCompare(b.slot))
 

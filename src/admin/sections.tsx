@@ -10,7 +10,7 @@ import type {
   Testimonial,
 } from '../content/types'
 import { CheckIcon, PlusIcon } from '../components/icons'
-import { Field, ImageField, Repeatable, Segmented, TextArea, TextInput } from './ui'
+import { Field, ImageField, Repeatable, Segmented, slotFromPath, TextArea, TextInput } from './ui'
 
 type EditorProps<T> = { value: T; onChange: (value: T) => void }
 
@@ -258,7 +258,7 @@ const NEW_CATEGORY = '__new__'
 export function CollectionsEditor({ value, onChange }: EditorProps<CollectionsContent>) {
   const [newCategory, setNewCategory] = useState<string | null>(null)
 
-  const usedSlots = new Set(value.items.map((item) => item.image.replace(/^\/images\//, '').replace(/\.png$/, '')))
+  const usedSlots = new Set(value.items.map((item) => slotFromPath(item.image)))
 
   function uniqueSlot(title: string) {
     const base = slugify(title) || 'piece'
@@ -274,7 +274,7 @@ export function CollectionsEditor({ value, onChange }: EditorProps<CollectionsCo
       title: 'New piece',
       category: value.categories[0] ?? 'Bridal',
       caption: '',
-      image: `/images/${uniqueSlot('new-piece')}.png`,
+      image: `/images/${uniqueSlot('new-piece')}.webp`,
       fabric: '',
     }
   }
@@ -417,7 +417,7 @@ export function CollectionsEditor({ value, onChange }: EditorProps<CollectionsCo
               </Field>
               <ImageField
                 label="Piece image"
-                slot={item.image.replace(/^\/images\//, '').replace(/\.png$/, '') || uniqueSlot(item.title)}
+                slot={slotFromPath(item.image) || uniqueSlot(item.title)}
                 value={item.image}
                 onChange={(image) => update({ image })}
               />

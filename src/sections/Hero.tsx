@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { contact, hero } from '../content'
 import { Button } from '../components/Button'
 import { RotatingSeal } from '../components/RotatingSeal'
+import { BreakoutFrame } from '../components/BreakoutFrame'
 import { Cutout } from '../motion/Cutout'
 import { BlockWipe, SplitWords, TrackingLabel } from '../motion/text'
 import { DURATION, EASE } from '../lib/motion'
@@ -131,7 +132,7 @@ export function Hero() {
               transition={{ duration: 1.4, delay: 1.2, ease: EASE.couture }}
             />
 
-            <div className="relative mx-auto aspect-[3/4] w-[86%] max-w-[34rem] sm:w-[78%] lg:ml-auto lg:w-full">
+            <BreakoutFrame>
               <Cutout
                 src={hero.image}
                 alt="A draped evening gown from the Adora Fashions atelier"
@@ -143,7 +144,7 @@ export function Hero() {
                 delay={0.95}
                 className="h-full w-full"
               />
-            </div>
+            </BreakoutFrame>
 
             <motion.p
               className="absolute -bottom-2 left-0 hidden max-w-[9rem] text-xs leading-[1.7] text-warm-gray lg:block"

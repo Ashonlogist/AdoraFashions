@@ -16,6 +16,9 @@ function throttle(ip: string): number {
   const now = Date.now()
   const record = attempts.get(ip)
   if (!record || record.until < now) return 0
+  // Only lock out once the allowance is actually spent. Without this check a
+  // single mistyped password would lock the owner out for the whole window.
+  if (record.count < MAX_ATTEMPTS) return 0
   return Math.ceil((record.until - now) / 1000)
 }
 

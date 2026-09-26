@@ -5,6 +5,12 @@ import { useMotionPreference } from '../lib/useMotionPreference'
 
 type CutoutTone = 'light' | 'dark'
 type CutoutEntrance = 'blur' | 'wipe' | 'none'
+/**
+ * `contain` suits a transparent cutout floating on the page; `cover` fills the
+ * frame with a photograph. Drop shadows only belong to the first case — a
+ * shadow around a rectangular photo just looks like a mistake.
+ */
+type CutoutFit = 'contain' | 'cover'
 
 const ENTRANCE_FROM = {
   blur: { opacity: 0, scale: 1.06, filter: 'blur(20px)' },
@@ -26,7 +32,8 @@ const ENTRANCE_TO = {
  *   2. idle float (never perfectly still on screen)
  *   3. entrance (soft blur, or a vertical draw)
  *   4. drop-shadow wrapper — kept separate because the entrance animates
- *      `filter` and would otherwise wipe the shadow out.
+ *      `filter` and would otherwise wipe the shadow out. Photographs use
+ *      `fit="cover"` and drop the shadow entirely.
  */
 export function Cutout({
   src,
@@ -42,6 +49,7 @@ export function Cutout({
   delay = 0,
   priority = false,
   parallax = true,
+  fit = 'contain',
 }: {
   src: string
   alt: string
@@ -56,6 +64,7 @@ export function Cutout({
   delay?: number
   priority?: boolean
   parallax?: boolean
+  fit?: CutoutFit
 }) {
   const outer = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
@@ -97,7 +106,8 @@ export function Cutout({
     return () => controls.stop()
   }, [reduced, float])
 
-  const shadow = tone === 'dark' ? 'cutout-dark' : 'cutout'
+  // A photograph carries its own background, so it gets no drop shadow.
+  const shadow = fit === 'cover' ? '' : tone === 'dark' ? 'cutout-dark' : 'cutout'
 
   return (
     <div ref={outer} className="relative h-full w-full">
@@ -135,7 +145,7 @@ export function Cutout({
                   loading={priority ? 'eager' : 'lazy'}
                   decoding="async"
                   draggable={false}
-                  className={`block h-full w-full select-none object-contain transition-opacity duration-1000 ease-couture ${
+                  className={`block h-full w-full select-none ${fit === 'cover' ? 'object-cover' : 'object-contain'} transition-opacity duration-1000 ease-couture ${
                     status === 'ready' ? 'opacity-100' : 'opacity-0'
                   } ${imageClassName}`}
                 />

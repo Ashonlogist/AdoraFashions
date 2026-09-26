@@ -1,12 +1,17 @@
 import type { ApiRequest, ApiResponse } from '../_lib/http'
 import { configurationError, methodNotAllowed, requireSession } from '../_lib/auth'
 import { client, fail, imagePath, isSlot, readFile, repoConfig, writeFile } from '../_lib/github'
-import { toPng } from '../_lib/images'
+import { toWebp } from '../_lib/images'
 
+/**
+ * Backstop only. The request body is already capped well below this by the host
+ * (Netlify 5.5 MB, Vercel 4.5 MB), and base64 inflates by 4/3, so a body that gets
+ * this far can never hold 8 MB of image. Kept as a floor against a decode bomb.
+ */
 const MAX_BYTES = 8 * 1024 * 1024
 
 /**
- * Commits an image to `/public/images/<slot>.png`.
+ * Commits an image to `/public/images/<slot>.webp`.
  *
  * The filename is always derived from the slot the admin UI generated, so the
  * owner never types one and can never accidentally create a path outside the
@@ -45,7 +50,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
 
   let png: Buffer
   try {
-    png = await toPng(incoming, typeof body.mime === 'string' ? body.mime : undefined)
+    png = await toWebp(incoming, typeof body.mime === 'string' ? body.mime : undefined)
   } catch (error) {
     return res.status(400).json({ error: (error as Error).message })
   }
@@ -68,7 +73,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
       ok: true,
       slot,
       path: result.path,
-      publicPath: `/images/${slot}.png`,
+      publicPath: `/images/${slot}.webp`,
       bytes: png.length,
       branch,
     })

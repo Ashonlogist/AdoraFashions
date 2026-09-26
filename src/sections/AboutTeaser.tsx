@@ -36,6 +36,7 @@ export function AboutTeaser() {
                 rotate={1.8}
                 swell={0.04}
                 float
+                fit="cover"
               />
             </div>
             <motion.div

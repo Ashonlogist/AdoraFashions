@@ -66,10 +66,11 @@
   }
 
   /* Hide the native cursor only while the bespoke cursor is mounted (desktop, fine pointer). */
+  /* The custom cursor carries a solid two-tone dot, so the native one is hidden
+     everywhere on the public site. Leaving it over plain text meant the pointer
+     read as a faint ring floating next to a second arrow. */
   html[data-cursor='on'],
-  html[data-cursor='on'] a,
-  html[data-cursor='on'] button,
-  html[data-cursor='on'] [role='button'] {
+  html[data-cursor='on'] * {
     cursor: none;
   }
 

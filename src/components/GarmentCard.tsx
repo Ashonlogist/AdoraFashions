@@ -60,13 +60,13 @@ export function GarmentCard({
             className="absolute inset-0 opacity-0 transition-opacity duration-1000 ease-couture group-hover:opacity-100"
             style={{
               background:
-                'radial-gradient(120% 80% at 50% 15%, rgba(250,248,244,0.9) 0%, rgba(245,241,234,0) 62%)',
+                'linear-gradient(180deg, rgba(245,241,234,0) 55%, rgba(245,241,234,0.55) 100%)',
             }}
           />
 
           <motion.div
             layoutId={`garment-${item.id}`}
-            className="absolute inset-0 flex items-center justify-center p-7 md:p-9"
+            className="absolute inset-0"
             transition={{ duration: 0.85, ease: EASE.couture }}
           >
             <motion.div
@@ -83,8 +83,8 @@ export function GarmentCard({
                 float={false}
                 parallax={false}
                 priority={priority}
+                fit="cover"
                 className="transition-transform duration-[1200ms] ease-couture group-hover:scale-[1.045]"
-                imageClassName="max-h-full"
               />
             </motion.div>
           </motion.div>

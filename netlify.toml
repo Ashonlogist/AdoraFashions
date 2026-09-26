@@ -1,0 +1,76 @@
+# Netlify deployment for the Adora Fashions site and its admin API.
+#
+# The dashboard talks to `/api/*`, which a single function claims via the
+# `path` export in netlify/functions/api.ts. Static files and the SPA routes
+# are handled below.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Client-side routes, each rewritten to the SPA shell so a hard refresh or a
+# shared link works.
+#
+# These are listed one by one on purpose. The usual `/*  /index.html  200` catch-all
+# cannot be used here: Netlify gives no way to exclude a path from a splat rule
+# (see "Splats" in the redirect docs), and a splat that matches `/api/...` would
+# hand the dashboard's requests to index.html instead of the function. A function
+# is not a static file, so the "real files win" shadowing exception does not save
+# it. Naming the six real routes removes the question.
+#
+# If you add a page, add a rule for it here too.
+[[redirects]]
+  from = "/collections"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/login"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/admin*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "same-origin"
+
+# Secrets are set in the Netlify UI (Site configuration → Environment
+# variables), never in this file. The repository is public, so there is nothing
+# safe to hardcode here.
+#
+#   ADMIN_PASSWORD   the dashboard password
+#   SESSION_SECRET   long random string used to sign the session cookie
+#   GITHUB_TOKEN     fine-grained PAT with Contents: read and write
+#   GITHUB_OWNER     Ashonlogist
+#   GITHUB_REPO      AdoraFashions
+#   GITHUB_BRANCH    main

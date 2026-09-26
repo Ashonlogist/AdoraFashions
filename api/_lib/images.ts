@@ -1,4 +1,4 @@
-/** Transparent cutouts must stay PNG, so PNG passes through byte-identical. */
+/** WebP keeps alpha, so transparent cutouts survive the conversion. */
 const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
 
 const ACCEPTED: Record<string, string> = {
@@ -21,13 +21,13 @@ export function detectFormat(buffer: Buffer): 'png' | 'jpg' | 'webp' | 'unknown'
 }
 
 /**
- * Everything is stored as `<slot>.png`. PNG is passed straight through; anything
- * else is re-encoded so the file always matches its extension (and keeps an alpha
- * channel if the source had one).
+ * Everything is stored as `<slot>.webp`. WebP is roughly a third the weight of
+ * PNG at the same quality and keeps an alpha channel, so a transparent cutout
+ * uploaded through the dashboard lands intact. WebP in, WebP straight through.
  */
-export async function toPng(buffer: Buffer, declaredMime?: string): Promise<Buffer> {
+export async function toWebp(buffer: Buffer, declaredMime?: string): Promise<Buffer> {
   const format = detectFormat(buffer)
-  if (format === 'png') return buffer
+  if (format === 'webp') return buffer
 
   const mime = declaredMime?.toLowerCase().split(';')[0].trim()
   const accepted = mime ? ACCEPTED[mime] : undefined
@@ -42,10 +42,10 @@ export async function toPng(buffer: Buffer, declaredMime?: string): Promise<Buff
 
   try {
     const { default: sharp } = await import('sharp')
-    return await sharp(buffer).png({ compressionLevel: 9 }).toBuffer()
+    return await sharp(buffer).webp({ quality: 82, alphaQuality: 90 }).toBuffer()
   } catch {
     throw new Error(
-      'This deployment cannot convert that image format. Please export it as a PNG and upload again.',
+      'This deployment cannot convert that image format. Please export it as a WebP or PNG and upload again.',
     )
   }
 }
