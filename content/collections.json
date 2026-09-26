@@ -54,6 +54,62 @@
       "caption": "The dress we are asked for most. A clean slip in cotton voile with a removable belt, drafted with enough ease to sit down in. Four lengths in production, all made to measure.",
       "fabric": "Washed cotton voile, leather belt",
       "image": "/images/ig-maame-gyanwaa.webp"
+    },
+    {
+      "id": "c-007",
+      "title": "Adwoa",
+      "category": "Bridal",
+      "caption": "A cathedral veil in silk tulle, cut long enough to trail a step behind and hemmed by hand so it never frays against the floor. Worn open, so the setting reads behind the line of the shoulder rather than through the cloth.",
+      "fabric": "Silk tulle, hand-hemmed",
+      "image": "/images/collection-bridal-01.webp"
+    },
+    {
+      "id": "c-008",
+      "title": "Akosua",
+      "category": "Bridal",
+      "caption": "The gown we are asked for when there is architecture to work with. Silk mikado through the body, a chapel train drafted in one piece, and a bodice corseted to the wearer rather than to a standard size.",
+      "fabric": "Silk mikado, cotton coutil, bone corset",
+      "image": "/images/collection-bridal-02.webp"
+    },
+    {
+      "id": "c-009",
+      "title": "Abena",
+      "category": "Corporate",
+      "caption": "Single button, hand-padded shoulder, trousers blocked to a full break. Cut long enough in the jacket to close over a dress, which is the only thing that makes a suit worth owning twice.",
+      "fabric": "Wool suiting, printed silk lining",
+      "image": "/images/collection-corporate-01.webp"
+    },
+    {
+      "id": "c-010",
+      "title": "Yaa",
+      "category": "Evening",
+      "caption": "Black crepe, cut on the bias and left unlined through the skirt so it falls from the hip. One seam at the waist and nothing else — the cloth is left to do the rest of the work.",
+      "fabric": "Double-faced crepe",
+      "image": "/images/collection-evening-01.webp"
+    },
+    {
+      "id": "c-011",
+      "title": "Zuri",
+      "category": "Everyday",
+      "caption": "The shirt dress, made properly. Long sleeve, a cuff that closes without a gap, and a hem drafted to sit below the knee on a tall frame. Washed cotton, so it can be worn hard and washed often.",
+      "fabric": "Washed cotton poplin, corozo buttons",
+      "image": "/images/collection-everyday-01.webp"
+    },
+    {
+      "id": "c-012",
+      "title": "Naa Dedei",
+      "category": "Traditional",
+      "caption": "Kente cut for the body rather than laid on it, with the panel joins matched across the shoulder by eye. A gele drafted to the same head-turn, wrapped on the morning itself.",
+      "fabric": "Handwoven kente, silk lining",
+      "image": "/images/collection-traditional-01.webp"
+    },
+    {
+      "id": "c-013",
+      "title": "Amma",
+      "category": "Evening",
+      "caption": "A slip in silk crepe with a gold chain at the neck — the only jewellery we ever add ourselves. Drafted close, weighted at the hem, and finished by hand at the strap.",
+      "fabric": "Silk crepe, plated chain",
+      "image": "/images/hero-main.webp"
     }
   ]
 }
