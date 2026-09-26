@@ -1,5 +1,22 @@
 # Photography credits
 
+## Adora Fashions — own work
+
+These are the studio's own posts, pulled from
+[@adorafashions](https://instagram.com/adorafashions) and self-hosted here. An
+Instagram link is a web page and expires; these are the actual files, so they
+keep working. Videos are the reels, trimmed to 540px wide and stripped of audio
+because they play muted.
+
+- `ig-amaara.mp4` — reel, `instagram.com/reel/DZSQGgdo3qN`
+- `ig-nhyira.mp4` — reel, `instagram.com/reel/DZSOT4PolZd`
+- `ig-aylin.mp4` — reel, `instagram.com/reel/DZSNvN-IvyO`
+- `ig-serwaa.webp` — photo, `instagram.com/p/DZSPn1vCPb4`
+- `ig-efua.webp` — photo, `instagram.com/p/DS911F5CEKD`
+- `ig-maame-gyanwaa.webp` — photo, `instagram.com/p/C23SdlPNaz1`
+
+## Unsplash — placeholders
+
 Unsplash License — free to use commercially, no attribution required,
 but these photographers made the work, so here they are.
 

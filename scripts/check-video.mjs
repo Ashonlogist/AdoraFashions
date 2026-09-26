@@ -1,6 +1,6 @@
 /**
- * Verifies that a pasted video link actually plays, at both breakpoints and
- * under reduced motion.
+ * Verifies that a reel actually plays, at both breakpoints and under reduced
+ * motion. Aimed at the studio's own reels on /collections.
  *
  * Checking that a <video> element *has* the autoplay attribute proves nothing —
  * every browser refuses to autoplay an unmuted element, and quietly refuses for
@@ -10,9 +10,8 @@
  *   npm run build && npm run preview &
  *   npm run check:video
  *
- * Expects content/collections.json items[0].image to point at a video file, so
- * it is deliberately NOT part of `npm run check` — it has nothing to test on a
- * site that is all stills. Scenarios can be run one at a time:
+ * Kept out of `npm run check` because it only means something while the
+ * collections hold video. Scenarios can be run one at a time:
  *
  *   node scripts/check-video.mjs refused
  */
@@ -84,13 +83,13 @@ for (const [name, width, height] of [
   const still = await page.evaluate(
     () =>
       Array.from(document.querySelectorAll('img')).filter((img) =>
-        (img.getAttribute('src') ?? '').includes('__probe'),
+        (img.getAttribute('src') ?? '').includes('ig-amaara'),
       ).length,
   )
   if (still > 0) fail(`${still} video slot(s) still render as <img>`)
   else pass('video slot renders as <video>, not <img>')
 
-  const state = await playback(page, 'video[src*="__probe"]')
+  const state = await playback(page, 'video[src*="ig-amaara"]')
   if (!state.found) {
     fail('no video element found for the pasted link')
   } else {
@@ -123,7 +122,7 @@ if (want('reduced')) {
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }])
   await page.goto(`${BASE}/collections`, { waitUntil: 'networkidle2', timeout: 30000 })
 
-  const state = await playback(page, 'video[src*="__probe"]')
+  const state = await playback(page, 'video[src*="ig-amaara"]')
   if (!state.found) fail('no video element found')
   else if (state.advanced) fail('video autoplays despite prefers-reduced-motion')
   else if (!state.controls) fail('paused but no controls — the visitor has no way to play it')
@@ -140,7 +139,7 @@ if (want('lightbox')) {
 
   const clicked = await page.evaluate(() => {
     const button = Array.from(document.querySelectorAll('button')).find((b) =>
-      b.querySelector('video[src*="__probe"]'),
+      b.querySelector('video[src*="ig-amaara"]'),
     )
     if (!button) return false
     button.click()
@@ -155,7 +154,7 @@ if (want('lightbox')) {
       // Scoped to the dialog on purpose — the card behind the overlay is still
       // mounted and has its own video with no controls.
       const dialog = document.querySelector('[role="dialog"]')
-      const video = dialog?.querySelector('video[src*="__probe"]')
+      const video = dialog?.querySelector('video[src*="ig-amaara"]')
       if (!video) return { found: false }
       return { found: true, controls: video.controls, paused: video.paused }
     })
@@ -186,7 +185,7 @@ if (want('refused')) {
   await page.goto(`${BASE}/collections`, { waitUntil: 'networkidle2', timeout: 30000 })
 
   const state = await page.evaluate(async () => {
-    const video = document.querySelector('video[src*="__probe"]')
+    const video = document.querySelector('video[src*="ig-amaara"]')
     if (!video) return { found: false }
     await new Promise((r) => setTimeout(r, 1200))
     return { found: true, controls: video.controls, refused: video.controls }
