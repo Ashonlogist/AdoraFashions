@@ -1,0 +1,53 @@
+{
+  "categories": ["Bridal", "Traditional", "Evening", "Corporate", "Everyday"],
+  "items": [
+    {
+      "id": "c-001",
+      "title": "Amaara",
+      "category": "Bridal",
+      "caption": "A two-piece traditional bridal look in handwoven cotton-silk. The structured bodice is boned and hand-felled, the wrapper cut on a soft bias so it falls without clinging. Worn with a gele drafted to the same head-turn.",
+      "fabric": "Handwoven cotton-silk, mother-of-pearl buttons",
+      "image": "/images/collection-bridal-01.png"
+    },
+    {
+      "id": "c-002",
+      "title": "Serwaa",
+      "category": "Traditional",
+      "caption": "Kente-paneled shirt dress with a shirtwaist sleeve. The kente is cut on the bias and panel-set by hand so the pattern reads across the body rather than down it. Finished with corozo buttons and a split hem.",
+      "fabric": "Kente panel, silk habotai lining",
+      "image": "/images/collection-traditional-01.png"
+    },
+    {
+      "id": "c-003",
+      "title": "Nhyira",
+      "category": "Bridal",
+      "caption": "Six metres of silk mikado, drafted into a cathedral train with a hand-corded bodice. The shoulder is built on a floating foundation so the line stays clean under a veil. Built over nine weeks, worn once.",
+      "fabric": "Silk mikado, silk tulle, hand-corded",
+      "image": "/images/collection-bridal-02.png"
+    },
+    {
+      "id": "c-004",
+      "title": "Aylin",
+      "category": "Evening",
+      "caption": "An asymmetric evening gown in crepe, with a single draped panel falling from the left shoulder. Fully lined, invisible side zip, weighted hem so it moves as one piece of cloth.",
+      "fabric": "Double-faced crepe, silk lining",
+      "image": "/images/collection-evening-01.png"
+    },
+    {
+      "id": "c-005",
+      "title": "Efua",
+      "category": "Corporate",
+      "caption": "A power suit drafted properly — not shrunk from a menswear block. Single-button jacket, hand-padded shoulder, trousers blocked to a full break. The jacket is lined in a vintage print chosen by the client.",
+      "fabric": "Wool suiting, printed silk lining",
+      "image": "/images/collection-corporate-01.png"
+    },
+    {
+      "id": "c-006",
+      "title": "Adwoa",
+      "category": "Everyday",
+      "caption": "The dress we are asked for most. A clean slip in cotton voile with a removable belt, drafted with enough ease to sit down in. Four lengths in production, all made to measure.",
+      "fabric": "Washed cotton voile, leather belt",
+      "image": "/images/collection-everyday-01.png"
+    }
+  ]
+}

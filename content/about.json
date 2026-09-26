@@ -1,0 +1,33 @@
+{
+  "portraitImage": "/images/about-portrait.png",
+  "kicker": "The Designer",
+  "headline": "Designing beyond trends, dressing for the memory.",
+  "signature": "Adora Mensah",
+  "years": "9",
+  "piecesDelivered": "640+",
+  "repeatClients": "78%",
+  "bioParagraphs": [
+    "I started Adora Fashions with a single machine, a borrowed table and a stubborn belief: that a woman should never have to choose between being beautifully dressed and being herself. Nine years later that belief still runs the studio. Every commission begins with a conversation, not a catalogue.",
+    "My work sits deliberately between African tradition and modern tailoring. I drape, I cut by hand, I fit on the body three times before a single stitch is finished. Traditional pieces carry the weight of the cloth they are made from; contemporary pieces are built to be worn, washed, lived in and repaired — not archived after one evening.",
+    "The atelier is deliberately small. It means you work with me, from first sketch to final pressing. It also means the calendar fills. I take a limited number of commissions each season so that every name on my rail gets the attention it deserves."
+  ],
+  "pullQuote": "A dress is not something you wear. It is something that remembers you, and keeps remembering long after the evening ends.",
+  "pullQuoteAttribution": "Adora Mensah, Founder & Lead Designer",
+  "philosophy": [
+    {
+      "icon": "loom",
+      "label": "Fabric",
+      "detail": "Sourced in small lots from weavers and mills we have worked with for years. Cloth is chosen for how it will age, not just how it photographs."
+    },
+    {
+      "icon": "scissors",
+      "label": "Fit",
+      "detail": "Three fittings, blocked by hand on the body. Nothing is graded down from a master size — the pattern is drafted to you."
+    },
+    {
+      "icon": "needle",
+      "label": "Finish",
+      "detail": "French seams, hand-finished hems, set-in sleeves. The parts your eye never catches are the parts we spend longest on."
+    }
+  ]
+}

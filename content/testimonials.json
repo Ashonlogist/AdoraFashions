@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "id": "t-001",
+      "quote": "I walked in with a photograph and a very vague idea. What I left with was the best-dressed version of myself I have ever been — and I have never felt so much like myself.",
+      "name": "Naa Densua",
+      "detail": "Bride, East Legon"
+    },
+    {
+      "id": "t-002",
+      "quote": "Three fittings, no fuss, no showroom pressure. Adora listened harder than anyone I have worked with. The kente panel sits exactly the way I drew it on a napkin.",
+      "name": "Efua Boateng",
+      "detail": "Corporate client, Airport Residential"
+    },
+    {
+      "id": "t-003",
+      "quote": "I have bought a lot of clothes in my life. This is the only time anyone asked what I actually do in a job interview, and then cut the sleeve to suit it.",
+      "name": "Yaa Asantewaa",
+      "detail": "Creative Director, Osu"
+    },
+    {
+      "id": "t-004",
+      "quote": "My mother's aso-oke was too precious to wear. Adora copied it stitch for stitch, made two more, and taught me how to care for all of them.",
+      "name": "Akosua Frimpong",
+      "detail": "Heirloom commission, Kumasi"
+    }
+  ]
+}

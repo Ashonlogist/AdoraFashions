@@ -1,0 +1,42 @@
+{
+  "name": "adorafashions",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "lint": "oxlint",
+    "art": "node scripts/generate-art.mjs",
+    "test:api": "tsx scripts/test-api.mts",
+    "check:site": "node scripts/check-site.mjs",
+    "check:admin": "node scripts/check-admin.mjs",
+    "check": "npm run typecheck && npm run test:api && npm run check:site && npm run check:admin"
+  },
+  "dependencies": {
+    "@octokit/rest": "^22.0.0",
+    "framer-motion": "^12.23.12",
+    "jsonwebtoken": "^9.0.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.9.1",
+    "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.4.21",
+    "oxlint": "^1.81.0",
+    "postcss": "^8.5.6",
+    "puppeteer-core": "^25.12.0",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  }
+}

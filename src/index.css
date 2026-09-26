@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bone: 245 241 234;
+    --color-cream: 250 248 244;
+    --color-charcoal: 28 26 23;
+    --color-warm-gray: 138 131 120;
+    --color-accent: 184 135 90;
+    --color-hairline: 228 222 211;
+
+    --ease-couture: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-drape: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-hem: cubic-bezier(0.33, 0, 0.15, 1);
+
+    /* Accent presets from the brand palette, applied at runtime from
+       /content/settings.json. Tailwind's `accent` colour reads --color-accent. */
+    --accent-terracotta: 184 135 90;
+    --accent-gold: 198 154 58;
+    --accent-charcoal: 28 26 23;
+    --nav-h: 5.25rem;
+  }
+
+  @media (max-width: 768px) {
+    :root {
+      --nav-h: 4.5rem;
+    }
+  }
+
+  * {
+    @apply border-hairline;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bone font-sans text-charcoal antialiased;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    @apply bg-accent/20 text-charcoal;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-1 ring-accent ring-offset-2 ring-offset-bone;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    font-variation-settings: 'SOFT' 0, 'WONK' 0, 'opsz' 90;
+  }
+
+  img {
+    -webkit-user-drag: none;
+  }
+
+  /* Hide the native cursor only while the bespoke cursor is mounted (desktop, fine pointer). */
+  html[data-cursor='on'],
+  html[data-cursor='on'] a,
+  html[data-cursor='on'] button,
+  html[data-cursor='on'] [role='button'] {
+    cursor: none;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply w-full bg-transparent;
+  }
+}
+
+@layer components {
+  /* Letterspaced uppercase micro-label — the connective tissue of the whole design system. */
+  .label {
+    @apply font-sans text-eyebrow font-medium uppercase text-warm-gray;
+  }
+
+  .label-dark {
+    @apply font-sans text-eyebrow font-medium uppercase text-bone/60;
+  }
+
+  .rule {
+    @apply h-px w-full bg-hairline;
+  }
+
+  .shell {
+    @apply mx-auto w-full max-w-shell px-6 md:px-10 lg:px-16;
+  }
+
+  /* Underline that draws in from the left rather than swapping colour. */
+  .link-draw {
+    position: relative;
+    display: inline-block;
+  }
+
+  .link-draw::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.12em;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.6s var(--ease-couture);
+  }
+
+  .link-draw:hover::after,
+  .link-draw:focus-visible::after,
+  .link-draw[data-active='true']::after {
+    transform: scaleX(1);
+  }
+
+  .link-draw-out::after {
+    transform-origin: right center;
+  }
+
+  /* Soft grounding shadow so transparent cutouts read as styled editorial photography. */
+  .cutout {
+    filter: drop-shadow(0 22px 34px rgba(28, 26, 23, 0.14));
+  }
+
+  .cutout-dark {
+    filter: drop-shadow(0 26px 44px rgba(0, 0, 0, 0.42));
+  }
+
+  .cutout-soft {
+    filter: drop-shadow(0 12px 20px rgba(28, 26, 23, 0.08));
+  }
+
+  /* Fallback frame used when an image is a linked photo with its own background. */
+  .framed {
+    @apply overflow-hidden bg-cream shadow-inset;
+  }
+
+  /* Very fine paper grain — keeps large flat bone areas from looking like dead #fff blocks. */
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .perspective-far {
+    perspective: 1200px;
+  }
+}
+
+/* Honour the OS setting globally: every bespoke motion collapses to a still frame. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
