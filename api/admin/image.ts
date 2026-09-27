@@ -48,9 +48,9 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     })
   }
 
-  let png: Buffer
+  let webp: Buffer
   try {
-    png = await toWebp(incoming, typeof body.mime === 'string' ? body.mime : undefined)
+    webp = await toWebp(incoming, typeof body.mime === 'string' ? body.mime : undefined)
   } catch (error) {
     return res.status(400).json({ error: (error as Error).message })
   }
@@ -62,7 +62,9 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     const result = await writeFile(
       octokit,
       path,
-      png.toString('base64'),
+      // The bytes themselves, not a base64 rendering of them: writeFile encodes
+      // for the GitHub API, and handing it a pre-encoded string double-encodes.
+      webp,
       existing
         ? `image: replace ${slot} via admin panel`
         : `image: add ${slot} via admin panel`,
@@ -74,7 +76,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
       slot,
       path: result.path,
       publicPath: `/images/${slot}.webp`,
-      bytes: png.length,
+      bytes: webp.length,
       branch,
     })
   } catch (error) {

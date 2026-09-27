@@ -31,8 +31,14 @@ export function contentPath(section: Section) {
   return `content/${section}.json`
 }
 
+/**
+ * Everything is committed as `<slot>.webp`: `toWebp` always hands back WebP, and
+ * the public path returned to the dashboard is `<slot>.webp` too. This used to
+ * append `.png`, so the file was written under a name the site never asked for
+ * and every upload 404'd while reporting success.
+ */
 export function imagePath(slot: string) {
-  return `${IMAGE_DIR}/${slot}.png`
+  return `${IMAGE_DIR}/${slot}.webp`
 }
 
 function decodeBase64(value: string): string {
@@ -55,11 +61,26 @@ export async function readFile(
   }
 }
 
+/**
+ * Encodes file contents the way the GitHub contents API expects: base64.
+ *
+ * A string is a text file (a content JSON) and its bytes are the content. A
+ * Buffer is the raw bytes of a binary file and must never be treated as text —
+ * base64-encoding an already-base64 string is what wrote base64 *text* into
+ * public/images, so every dashboard upload looked like it had worked and then
+ * rendered as a broken image.
+ */
+export function encodeForGitHub(contents: string | Buffer): string {
+  return Buffer.isBuffer(contents)
+    ? contents.toString('base64')
+    : Buffer.from(contents, 'utf8').toString('base64')
+}
+
 /** Create or overwrite a file, always sending the previous blob's SHA when we have one. */
 export async function writeFile(
   octokit: Octokit,
   path: string,
-  contents: string,
+  contents: string | Buffer,
   message: string,
   existingSha?: string,
 ) {
@@ -71,7 +92,7 @@ export async function writeFile(
     path,
     branch,
     message,
-    content: Buffer.from(contents, 'utf8').toString('base64'),
+    content: encodeForGitHub(contents),
     ...(current ? { sha: current } : {}),
   })
   return { path, branch, sha: current ?? null }

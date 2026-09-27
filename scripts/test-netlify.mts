@@ -27,6 +27,7 @@ function stubGitHub() {
     contents.set(`content/${name}`, { body: read(contentDir, name).toString(), sha: `sha-${name}` })
   }
 
+  const writes = new Map<string, string>()
   const tree = [
     ...[...contents.keys()].map((path) => ({ path, type: 'blob', sha: `sha-${path}` })),
     ...readdirSync(imageDir).map((name) => ({
@@ -40,6 +41,17 @@ function stubGitHub() {
   globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(typeof input === 'string' ? input : input instanceof URL ? input : input.url)
     if (!url.hostname.endsWith('github.com')) return real(input as never, init)
+
+    /* Capture what a write would have sent, so a test can inspect the exact
+       bytes rather than trusting the 200 the handler returned. */
+    if (init?.method && init.method !== 'GET' && decodeURIComponent(url.pathname).includes('/contents/')) {
+      const sent = JSON.parse(String(init.body))
+      writes.set(decodeURIComponent(url.pathname).split('/contents/')[1], sent.content)
+      return Response.json({
+        content: { sha: `sha-written-${writes.size}` },
+        commit: { sha: `commit-${writes.size}` },
+      })
+    }
 
     // Octokit escapes the slash in `content/hero.json` as %2F.
     const decoded = decodeURIComponent(url.pathname)
@@ -58,10 +70,12 @@ function stubGitHub() {
     if (url.pathname.includes('/git/trees/')) return Response.json({ tree, truncated: false })
     return Response.json({ message: 'Not Found' }, { status: 404 })
   }) as typeof fetch
+
+  return writes
 }
 
-stubGitHub()
-
+/** Everything the handlers tried to commit, keyed by path. */
+const stubbedWrites = stubGitHub()
 
 process.env.ADMIN_PASSWORD = 'test-password'
 process.env.SESSION_SECRET = 'test-secret-value-long-enough-for-hs256'
@@ -171,5 +185,61 @@ const oversized = await call('/api/admin/image', {
 })
 check('an oversized upload is refused with an explanation', oversized.status === 413, `status ${oversized.status}`)
 check('the refusal explains what to do', /smaller/i.test((await oversized.json()).error ?? ''))
+
+/* The upload bug this guards against was invisible from the response: the
+   handler answered 200 with a correct-looking publicPath while committing
+   base64 *text* to public/images, because the bytes were passed to a writer
+   that encoded them a second time. Every image save "succeeded" and nothing
+   displayed. So the assertion is on the bytes handed to GitHub. */
+const webpBytes = Buffer.concat([
+  Buffer.from('RIFF'),
+  (() => { const n = Buffer.alloc(4); n.writeUInt32LE(28); return n })(),
+  Buffer.from('WEBPVP8 '),
+  Buffer.alloc(20, 7),
+])
+const upload = await call('/api/admin/image', {
+  method: 'POST',
+  headers: { 'content-type': 'application/json', ...withCookie.headers },
+  body: JSON.stringify({
+    slot: 'regression-check',
+    base64: webpBytes.toString('base64'),
+    mime: 'image/webp',
+  }),
+})
+const uploadText = await upload.text()
+const uploadBody = (() => { try { return JSON.parse(uploadText) } catch { return {} } })()
+check('an upload is accepted', upload.status === 200, `status ${upload.status} ${uploadText.slice(0, 160)}`)
+
+const committed = Buffer.from(stubbedWrites.get('public/images/regression-check.webp') ?? '', 'base64')
+check(
+  'the committed file is the image itself, not base64 text',
+  committed.subarray(0, 4).toString('ascii') === 'RIFF' &&
+    committed.subarray(8, 12).toString('ascii') === 'WEBP',
+  `starts with ${JSON.stringify(committed.subarray(0, 12).toString('latin1'))}`,
+)
+check(
+  'the committed bytes are unchanged, not re-encoded',
+  committed.equals(webpBytes),
+  `${committed.length} bytes committed, ${webpBytes.length} sent`,
+)
+check(
+  'the public path the dashboard writes matches the file committed',
+  uploadBody.publicPath === '/images/regression-check.webp',
+  JSON.stringify(uploadBody),
+)
+
+/* And the text path must keep working: a content save is a string, and
+   treating it as binary would corrupt every JSON file in the repository. */
+await call('/api/admin/content/settings', {
+  method: 'PUT',
+  headers: { 'content-type': 'application/json', ...withCookie.headers },
+  body: JSON.stringify({ content: { footerBlurb: 'A round trip should come back exactly.' } }),
+})
+const savedSetting = Buffer.from(stubbedWrites.get('content/settings.json') ?? '', 'base64').toString('utf8')
+check(
+  'a content save is stored as text, unchanged',
+  JSON.parse(savedSetting).footerBlurb === 'A round trip should come back exactly.',
+  savedSetting.slice(0, 120),
+)
 
 console.log(`\n${passed} checks passed`)
