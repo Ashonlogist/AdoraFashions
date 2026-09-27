@@ -3,8 +3,11 @@
  * mocked in the browser — this exercises the real UI: login gate, redirect,
  * every section editor, dirty state, save, and the success toast.
  */
-import puppeteer from '/tmp/opencode/verify/node_modules/puppeteer-core/lib/puppeteer/puppeteer-core.js'
+import puppeteer from 'puppeteer-core'
 import { readFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import sharp from 'sharp'
 
 const BASE = process.env.BASE ?? 'http://localhost:4173'
 const CONTENT = Object.fromEntries(
@@ -73,7 +76,16 @@ function intercept(target) {
     if (path === '/api/admin/image') {
       const body = JSON.parse(request.postData() ?? '{}')
       uploads.push({ slot: body.slot, mime: body.mime, bytes: body.base64?.length ?? 0 })
-      return json({ ok: true, publicPath: `/images/${body.slot}.png`, path: `public/images/${body.slot}.png`, bytes: 1234, branch: 'main' })
+      // The storage convention is WebP. A mock that answered .png would agree
+      // with a server that has the bug, and the path the dashboard writes into
+      // the content would never be checked against the path actually stored.
+      return json({
+        ok: true,
+        publicPath: `/images/${body.slot}.webp`,
+        path: `public/images/${body.slot}.webp`,
+        bytes: 1234,
+        branch: 'main',
+      })
     }
     if (path === '/api/admin/images')
       return json({ branch: 'main', images: [{ slot: 'hero-main', file: 'hero-main.png', path: '/images/hero-main.png', size: 90000 }] })
@@ -184,7 +196,63 @@ if (Number(after) === Number(before) + 1) {
   fail(`add piece did nothing (${before} → ${after})`)
 }
 
-// 8. Logout returns to the login screen and forgets the session
+// 8. Replacing an existing image: the preview must change even though the
+// stored path cannot, and there is nothing to save because the file is already
+// committed. This is the case that made a successful upload look like a no-op.
+await page.$$eval('nav[aria-label="Content sections"] button', (b) => b[1].click())
+await new Promise((r) => setTimeout(r, 300))
+const fixture = join(tmpdir(), 'adorafashions-replace.png')
+await sharp({ create: { width: 8, height: 8, channels: 3, background: '#c8102e' } })
+  .png()
+  .toFile(fixture)
+
+const previewSrc = () =>
+  page.evaluate(() => {
+    const img = [...document.querySelectorAll('img')].find((n) =>
+      n.getAttribute('src')?.startsWith('/images/'),
+    )
+    return img ? img.getAttribute('src') : null
+  })
+
+const beforeSrc = await previewSrc()
+if (!beforeSrc) fail('the About portrait preview was not rendered to begin with')
+const putsBeforeReplace = puts.length
+const saveDisabled = () =>
+  page.evaluate(() => {
+    const button = [...document.querySelectorAll('button')].find((b) =>
+      b.textContent.trim().startsWith('Save changes'),
+    )
+    return !button || button.disabled
+  })
+
+const fileInput = await page.$('input[type=file]')
+await fileInput.uploadFile(fixture)
+await page
+  .waitForFunction(
+    (previous) => {
+      const img = [...document.querySelectorAll('img')].find((n) =>
+        n.getAttribute('src')?.startsWith('/images/'),
+      )
+      const src = img?.getAttribute('src')
+      return src && src !== previous && src.includes('?v=')
+    },
+    { timeout: 8000 },
+    beforeSrc,
+  )
+  .then(
+    () => ok('replacing an image re-fetches the preview instead of showing the cached copy'),
+    () => fail('the preview still pointed at the old cached image after replacing it'),
+  )
+const bodyAfter = await page.evaluate(() => document.body.innerText)
+if (bodyAfter.includes('already live'))
+  ok('the dashboard says the replacement is live, instead of looking like a failure')
+else fail('no confirmation that the replaced image was saved')
+if (await saveDisabled()) ok('a replacement leaves nothing to save, so Save stays disabled')
+else fail('Save became enabled for a change the content cannot express')
+if (puts.length === putsBeforeReplace) ok('a replacement writes no redundant content commit')
+else fail('a replacement pushed a redundant content commit')
+
+// 9. Logout returns to the login screen and forgets the session
 await page.evaluate(() => {
   const logoutButton = [...document.querySelectorAll('button')].find((b) => b.textContent.includes('Log out'))
   logoutButton.click()

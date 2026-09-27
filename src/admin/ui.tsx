@@ -148,6 +148,12 @@ export function ImageField({
   const [mode, setMode] = useState<'upload' | 'link'>(value.startsWith('http') ? 'link' : 'upload')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  // Replacing an image returns the same public path, so the stored value cannot
+  // change and a deep comparison of the content reports nothing to save. The
+  // upload has already committed the file, so the version counter is what makes
+  // the preview fetch the new bytes rather than the copy the browser still has.
+  const [version, setVersion] = useState(0)
+  const [replaced, setReplaced] = useState(false)
   const input = useRef<HTMLInputElement>(null)
 
   async function onFile(file: File | undefined) {
@@ -156,7 +162,13 @@ export function ImageField({
     setError('')
     try {
       const result = await adminApi.upload(slot, file)
-      onChange(result.publicPath)
+      setVersion((current) => current + 1)
+      if (result.publicPath === value) {
+        setReplaced(true)
+      } else {
+        setReplaced(false)
+        onChange(result.publicPath)
+      }
     } catch (caught) {
       setError((caught as Error).message)
     } finally {
@@ -191,7 +203,7 @@ export function ImageField({
             </span>
           ) : value ? (
             <Media
-              src={value}
+              src={version ? `${value}?v=${version}` : value}
               alt=""
               controls={false}
               className="h-full w-full object-contain"
@@ -227,6 +239,12 @@ export function ImageField({
                 <code className="bg-bone px-1.5 py-0.5 text-charcoal/80">{slot}.webp</code>{' '}
                 — you never need to think about filenames.
               </p>
+              {replaced && (
+                <p className="text-[0.6875rem] leading-[1.7] text-accent">
+                  Replaced and already live. The file itself is committed, so there is nothing
+                  left to save here.
+                </p>
+              )}
             </div>
           ) : (
             <div className="space-y-3">
